@@ -9,7 +9,7 @@
 
 #include "../common/fileutil.h"
 #include "../common/xmlutil.h"
-#include "../common/enums.h"
+#include "../tmxbin/tmxbinloader.h"
 
 tmxbin::Orientation parse_orientation( const pugi::xml_node& mapnode )
 {
@@ -181,7 +181,7 @@ int main( int argc, char** argv )
     out.write<uint16_t>( uint16_t(mw) );
     out.write<uint16_t>( uint16_t(mh) );
     out.write<uint16_t>( uint16_t(tw) );
-    out.write<uint16_t>( uint16_t(mh) );
+    out.write<uint16_t>( uint16_t(th) );
 
     auto tilesets = get_children(map_node, "tileset");
     out.write<uint8_t>( uint8_t(tilesets.size()) );

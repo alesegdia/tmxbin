@@ -8,7 +8,6 @@
 
 #include "../common/fileutil.h"
 #include "../common/xmlutil.h"
-#include "../common/enums.h"
 
 
 int main( int argc, char** argv )

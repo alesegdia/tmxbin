@@ -16,6 +16,8 @@ set(COMMON_SOURCES
     lib/pugixml/pugixml.hpp
     src/common/fileutil.cpp
     src/common/fileutil.h
+    src/common/xmlutil.cpp
+    src/common/xmlutil.h
     src/common/enums.h
 )
 

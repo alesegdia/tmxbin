@@ -1,4 +1,3 @@
-
 #include <iostream>
 #include <fstream>
 #include <cassert>
@@ -9,6 +8,7 @@
 #include "../../lib/pugixml/pugixml.hpp"
 
 #include "../common/fileutil.h"
+#include "../common/xmlutil.h"
 #include "../common/enums.h"
 
 tmxbin::Orientation parse_orientation( const pugi::xml_node& mapnode )
@@ -56,17 +56,6 @@ void parse_tilesize( const pugi::xml_node& mapnode, uint16_t* outw, uint16_t* ou
     assert(attr_tileh != nullptr);
     *outw = uint16_t(attr_tilew.as_int());
     *outh = uint16_t(attr_tileh.as_int());
-}
-
-
-std::vector<pugi::xml_node> get_children(const pugi::xml_node& node, const char* childname)
-{
-    std::vector<pugi::xml_node> outvec;
-    for( pugi::xml_node child : node.children(childname) )
-    {
-        outvec.push_back(child);
-    }
-    return outvec;
 }
 
 void write_tileset( OutputFile& of, pugi::xml_node tileset )

@@ -19,10 +19,9 @@ public:
     template <typename T>
     void dealloc(T* memory)
     {
-        free(memory);
+        dealloc(memory);
     }
 
-protected:
     virtual void* alloc(size_t element_size, size_t element_count) = 0 ;
     virtual void dealloc(void* memory) = 0 ;
 
@@ -30,7 +29,7 @@ protected:
 
 class DefaultAllocator : public Allocator
 {
-private:
+public:
     virtual void* alloc(size_t element_size, size_t element_count) final
     {
         return malloc(element_size * element_count);

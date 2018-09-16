@@ -9,6 +9,8 @@
 #include "../util/fileutil.h"
 #include "../util/xmlutil.h"
 
+#include "../tmxbin/filestream.h"
+
 
 int main( int argc, char** argv )
 {
@@ -26,10 +28,10 @@ int main( int argc, char** argv )
         return -1;
     }
 
-    std::string outfile_path = change_filestr_extension(argv[1], "tsb");
+    std::string outfile_path = tmxbin::change_filestr_extension(argv[1], "tsb");
 
-    OutputFile out;
-    out.load(outfile_path.c_str());
+    tmxbin::StdOutputFile out;
+    out.open(outfile_path.c_str());
 
     if( false == out.ok() )
     {
@@ -53,10 +55,10 @@ int main( int argc, char** argv )
     const char* name = attr_name.as_string();
     out.writeStr(name);
 
-    out.write<uint16_t>(uint16_t(attr_tw.as_uint()));
-    out.write<uint16_t>(uint16_t(attr_th.as_uint()));
-    out.write<uint16_t>(uint16_t(attr_tc.as_uint()));
-    out.write<uint16_t>(uint16_t(attr_columns.as_uint()));
+    out.writeT<uint16_t>(uint16_t(attr_tw.as_uint()));
+    out.writeT<uint16_t>(uint16_t(attr_th.as_uint()));
+    out.writeT<uint16_t>(uint16_t(attr_tc.as_uint()));
+    out.writeT<uint16_t>(uint16_t(attr_columns.as_uint()));
 
     pugi::xml_node image_node = tileset_node.child("image");
     assert(image_node != nullptr);
@@ -69,23 +71,23 @@ int main( int argc, char** argv )
     pugi::xml_attribute attr_ih = image_node.attribute("height");
     assert(attr_iw != nullptr);
     assert(attr_ih != nullptr);
-    out.write<uint16_t>(uint16_t(attr_iw.as_uint()));
-    out.write<uint16_t>(uint16_t(attr_ih.as_uint()));
+    out.writeT<uint16_t>(uint16_t(attr_iw.as_uint()));
+    out.writeT<uint16_t>(uint16_t(attr_ih.as_uint()));
 
-    auto tile_nodes = get_children(tileset_node, "tile");
+    auto tile_nodes = tmxbin::get_children(tileset_node, "tile");
 
-    out.write<uint16_t>(uint16_t(tile_nodes.size()));
+    out.writeT<uint16_t>(uint16_t(tile_nodes.size()));
 
     for( auto& tile_node : tile_nodes )
     {
         pugi::xml_attribute attr_id = tile_node.attribute("id");
         assert(attr_id != nullptr);
-        out.write<uint16_t>(uint16_t(attr_id.as_uint()));
+        out.writeT<uint16_t>(uint16_t(attr_id.as_uint()));
 
         pugi::xml_node props_root_node = tile_node.child("properties");
-        auto prop_nodes = get_children(props_root_node, "property");
+        auto prop_nodes = tmxbin::get_children(props_root_node, "property");
 
-        out.write<uint16_t>(uint16_t(prop_nodes.size()));
+        out.writeT<uint16_t>(uint16_t(prop_nodes.size()));
 
         for( auto& prop_node : prop_nodes )
         {

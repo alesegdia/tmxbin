@@ -1,5 +1,9 @@
 #include "xmlutil.h"
 
+
+namespace tmxbin {
+
+
 std::vector<pugi::xml_node> get_children(const pugi::xml_node& node, const char* childname)
 {
     std::vector<pugi::xml_node> outvec;
@@ -10,3 +14,5 @@ std::vector<pugi::xml_node> get_children(const pugi::xml_node& node, const char*
     return outvec;
 }
 
+
+}

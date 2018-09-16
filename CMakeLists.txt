@@ -6,7 +6,7 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/lib)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/lib)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin)
 
-set(COMMON_SOURCES
+set(COMMON_CONVERTER_SOURCES
     src/pugixml/pugiconfig.hpp
     src/pugixml/pugixml.cpp
     src/pugixml/pugixml.hpp
@@ -24,16 +24,20 @@ file(GLOB_RECURSE TMXBIN_SOURCES
 add_library(tmxbin ${TMXBIN_SOURCES})
 
 add_executable(tmx2tmb
-    ${COMMON_SOURCES}
+    ${COMMON_CONVERTER_SOURCES}
     src/tmx2tmb/main.cpp
 )
 
 add_executable(tsx2tsb
-    ${COMMON_SOURCES}
+    ${COMMON_CONVERTER_SOURCES}
     src/tsx2tsb/main.cpp
 )
 
 add_executable(tmxbin_loadertest src/test/loader.cpp)
+
+target_link_libraries(tmx2tmb tmxbin)
+target_link_libraries(tsx2tsb tmxbin)
+target_link_libraries(tmxbin_loadertest tmxbin)
 
 set(CUSTOM_LINKER_FLAGS "-g -lgcov --coverage -fprofile-arcs -static -static-libgcc -static-libstdc++")
 set(CUSTOM_COMPILE_FLAGS "-g -std=c++11 -fprofile-arcs -ftest-coverage")

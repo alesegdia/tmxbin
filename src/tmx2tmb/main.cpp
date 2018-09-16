@@ -9,8 +9,7 @@
 
 #include "../util/fileutil.h"
 #include "../util/xmlutil.h"
-#include "../tmxbin/orientation.h"
-#include "../tmxbin/renderorder.h"
+#include "../tmxbin/tmxbin.h"
 
 tmxbin::Orientation parse_orientation( const pugi::xml_node& mapnode )
 {
@@ -59,7 +58,7 @@ void parse_tilesize( const pugi::xml_node& mapnode, uint16_t* outw, uint16_t* ou
     *outh = uint16_t(attr_tileh.as_int());
 }
 
-void write_tileset( OutputFile& of, pugi::xml_node tileset )
+void write_tileset( tmxbin::StdOutputFile& of, pugi::xml_node tileset )
 {
     pugi::xml_attribute attr_firstgid = tileset.attribute("firstgid");
     pugi::xml_attribute attr_source = tileset.attribute("source");
@@ -70,14 +69,14 @@ void write_tileset( OutputFile& of, pugi::xml_node tileset )
         exit(-1);
     }
 
-    of.write<uint16_t>( uint16_t(attr_firstgid.as_int()) );
+    of.writeT<uint16_t>(uint16_t(attr_firstgid.as_int()) );
     std::string source_file = std::string(attr_source.as_string());
 
-    auto new_str = change_filestr_extension(source_file.c_str(), "tsb");
+    auto new_str = tmxbin::change_filestr_extension(source_file.c_str(), "tsb");
     of.writeStr(new_str.c_str());
 }
 
-void write_layer( OutputFile& of, pugi::xml_node layer )
+void write_layer( tmxbin::StdOutputFile& of, pugi::xml_node layer )
 {
     // process layer metadata
     pugi::xml_attribute attr_lw = layer.attribute("width");
@@ -90,9 +89,9 @@ void write_layer( OutputFile& of, pugi::xml_node layer )
     assert(attr_id != nullptr);
     assert(attr_name != nullptr);
 
-    of.write<uint16_t>(uint16_t(attr_lw.as_int()));
-    of.write<uint16_t>(uint16_t(attr_lh.as_int()));
-    of.write<uint16_t>(uint16_t(attr_id.as_int()));
+    of.writeT<uint16_t>(uint16_t(attr_lw.as_int()));
+    of.writeT<uint16_t>(uint16_t(attr_lh.as_int()));
+    of.writeT<uint16_t>(uint16_t(attr_id.as_int()));
     of.writeStr(attr_name.as_string());
 
     // now process the layer positioning data
@@ -127,7 +126,7 @@ void write_layer( OutputFile& of, pugi::xml_node layer )
             if( number_found )
             {
                 assert(accumulator <= 255 && "Only supporting 1 bitemap (.bandcamp.com)");
-                of.write<uint8_t>(uint8_t(accumulator));
+                of.writeT<uint8_t>(uint8_t(accumulator));
             }
             number_found = false;
             accumulator = 0;
@@ -153,10 +152,10 @@ int main( int argc, char** argv )
         return -1;
     }
 
-    std::string outfile_path = change_filestr_extension(argv[1], "tmb");
+    std::string outfile_path = tmxbin::change_filestr_extension(argv[1], "tmb");
 
-    OutputFile out;
-    out.load(outfile_path.c_str());
+    tmxbin::StdOutputFile out;
+    out.open(outfile_path.c_str());
 
     if( false == out.ok() )
     {
@@ -166,27 +165,27 @@ int main( int argc, char** argv )
 
     auto map_node = doc.select_node("map").node();
 
-    out.write<uint8_t>( uint8_t(parse_orientation(map_node)) );
-    out.write<uint8_t>( uint8_t(parse_renderorder(map_node)) );
+    out.writeT<uint8_t>( uint8_t(parse_orientation(map_node)) );
+    out.writeT<uint8_t>( uint8_t(parse_renderorder(map_node)) );
 
     uint16_t mw, mh, tw, th;
     parse_mapsize(map_node, &mw, &mh);
     parse_tilesize(map_node, &tw, &th);
 
-    out.write<uint16_t>( uint16_t(mw) );
-    out.write<uint16_t>( uint16_t(mh) );
-    out.write<uint16_t>( uint16_t(tw) );
-    out.write<uint16_t>( uint16_t(th) );
+    out.writeT<uint16_t>( uint16_t(mw) );
+    out.writeT<uint16_t>( uint16_t(mh) );
+    out.writeT<uint16_t>( uint16_t(tw) );
+    out.writeT<uint16_t>( uint16_t(th) );
 
-    auto tilesets = get_children(map_node, "tileset");
-    out.write<uint8_t>( uint8_t(tilesets.size()) );
+    auto tilesets = tmxbin::get_children(map_node, "tileset");
+    out.writeT<uint8_t>( uint8_t(tilesets.size()) );
     for( auto& tileset : tilesets )
     {
         write_tileset(out, tileset);
     }
 
-    auto layers = get_children(map_node, "layer");
-    out.write<uint8_t>( uint8_t(layers.size()) );
+    auto layers = tmxbin::get_children(map_node, "layer");
+    out.writeT<uint8_t>( uint8_t(layers.size()) );
     for( auto& layer : layers )
     {
         write_layer(out, layer);

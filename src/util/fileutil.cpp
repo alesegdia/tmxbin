@@ -2,6 +2,9 @@
 #include "fileutil.h"
 
 
+namespace tmxbin {
+
+
 bool file_exists(const char *path)
 {
     std::ifstream f(path);
@@ -19,34 +22,5 @@ std::string change_filestr_extension(const char *str, const char *newext)
     return s.substr(0, s.find(".")) + "." + newext;
 }
 
-File::~File()
-{
-    if( m_file.is_open() )
-    {
-        m_file.close();
-    }
-}
 
-void File::load(const char *path)
-{
-    if( m_file.is_open() )
-    {
-        close();
-    }
-    m_file.open(path, mode());
-}
-
-void File::close()
-{
-    m_file.close();
-}
-
-bool File::ok()
-{
-    return m_file.is_open();
-}
-
-std::fstream &File::file()
-{
-    return m_file;
 }

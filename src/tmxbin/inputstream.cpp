@@ -1,6 +1,8 @@
-#include "tmxbinloader.h"
+#include "inputstream.h"
+
 
 namespace tmxbin {
+
 
 InputStream::~InputStream()
 {
@@ -22,14 +24,6 @@ void StdInputStream::read(char *out, size_t size)
 {
     m_istream.read(out, std::streamsize(size));
 }
-
-Allocator::~Allocator()
-{
-
-}
-
-
-
 
 
 }

@@ -4,10 +4,10 @@
 #include <vector>
 #include <string.h>
 #include <stdio.h>
-#include "../../lib/pugixml/pugixml.hpp"
 
-#include "../common/fileutil.h"
-#include "../common/xmlutil.h"
+#include "../pugixml/pugixml.hpp"
+#include "../util/fileutil.h"
+#include "../util/xmlutil.h"
 
 
 int main( int argc, char** argv )
@@ -53,33 +53,24 @@ int main( int argc, char** argv )
     const char* name = attr_name.as_string();
     out.writeStr(name);
 
-    uint16_t tw = uint16_t(attr_tw.as_uint());
-    uint16_t th = uint16_t(attr_th.as_uint());
-    uint16_t tc = uint16_t(attr_tc.as_uint());
-    uint16_t columns = uint16_t(attr_columns.as_uint());
-
-    out.write<uint16_t>(tw);
-    out.write<uint16_t>(th);
-    out.write<uint16_t>(tc);
-    out.write<uint16_t>(columns);
+    out.write<uint16_t>(uint16_t(attr_tw.as_uint()));
+    out.write<uint16_t>(uint16_t(attr_th.as_uint()));
+    out.write<uint16_t>(uint16_t(attr_tc.as_uint()));
+    out.write<uint16_t>(uint16_t(attr_columns.as_uint()));
 
     pugi::xml_node image_node = tileset_node.child("image");
     assert(image_node != nullptr);
 
     pugi::xml_attribute attr_source = image_node.attribute("source");
     assert(attr_source != nullptr);
-    const char* source = attr_source.as_string();
-    out.writeStr(source);
+    out.writeStr(attr_source.as_string());
 
     pugi::xml_attribute attr_iw = image_node.attribute("width");
     pugi::xml_attribute attr_ih = image_node.attribute("height");
     assert(attr_iw != nullptr);
     assert(attr_ih != nullptr);
-    uint16_t iw, ih;
-    iw = uint16_t(attr_iw.as_uint());
-    ih = uint16_t(attr_ih.as_uint());
-    out.write<uint16_t>(iw);
-    out.write<uint16_t>(ih);
+    out.write<uint16_t>(uint16_t(attr_iw.as_uint()));
+    out.write<uint16_t>(uint16_t(attr_ih.as_uint()));
 
     auto tile_nodes = get_children(tileset_node, "tile");
 
@@ -89,7 +80,7 @@ int main( int argc, char** argv )
     {
         pugi::xml_attribute attr_id = tile_node.attribute("id");
         assert(attr_id != nullptr);
-        uint16_t id = uint16_t(attr_id.as_uint());
+        out.write<uint16_t>(uint16_t(attr_id.as_uint()));
 
         pugi::xml_node props_root_node = tile_node.child("properties");
         auto prop_nodes = get_children(props_root_node, "property");
@@ -104,12 +95,9 @@ int main( int argc, char** argv )
             assert(attr_name != nullptr);
             assert(attr_type != nullptr);
             assert(attr_value != nullptr);
-            const char* prop_name = attr_name.as_string();
-            const char* prop_type = attr_type.as_string();
-            const char* prop_value = attr_value.as_string();
-            out.writeStr(prop_name);
-            out.writeStr(prop_type);
-            out.writeStr(prop_value);
+            out.writeStr(attr_name.as_string());
+            out.writeStr(attr_type.as_string());
+            out.writeStr(attr_value.as_string());
         }
     }
 

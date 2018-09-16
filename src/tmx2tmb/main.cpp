@@ -5,11 +5,12 @@
 #include <string.h>
 #include <stdio.h>
 
-#include "../../lib/pugixml/pugixml.hpp"
+#include "../pugixml/pugixml.hpp"
 
-#include "../common/fileutil.h"
-#include "../common/xmlutil.h"
-#include "../tmxbin/tmxbinloader.h"
+#include "../util/fileutil.h"
+#include "../util/xmlutil.h"
+#include "../tmxbin/orientation.h"
+#include "../tmxbin/renderorder.h"
 
 tmxbin::Orientation parse_orientation( const pugi::xml_node& mapnode )
 {
@@ -89,16 +90,10 @@ void write_layer( OutputFile& of, pugi::xml_node layer )
     assert(attr_id != nullptr);
     assert(attr_name != nullptr);
 
-    uint16_t lw, lh;
-    lw = uint16_t(attr_lw.as_int());
-    lh = uint16_t(attr_lh.as_int());
-    uint16_t id = uint16_t(attr_id.as_int());
-    const char* name = attr_name.as_string();
-
-    of.write<uint16_t>(lw);
-    of.write<uint16_t>(lh);
-    of.write<uint16_t>(id);
-    of.writeStr(name);
+    of.write<uint16_t>(uint16_t(attr_lw.as_int()));
+    of.write<uint16_t>(uint16_t(attr_lh.as_int()));
+    of.write<uint16_t>(uint16_t(attr_id.as_int()));
+    of.writeStr(attr_name.as_string());
 
     // now process the layer positioning data
     pugi::xml_node data = layer.child("data");

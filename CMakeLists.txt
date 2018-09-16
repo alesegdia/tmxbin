@@ -2,36 +2,53 @@ cmake_minimum_required(VERSION 2.8.11)
 
 project(tmxbin)
 
-set(TMX2TMB_SOURCES
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/lib)
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/lib)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin)
+
+set(COMMON_SOURCES
+    src/pugixml/pugiconfig.hpp
+    src/pugixml/pugixml.cpp
+    src/pugixml/pugixml.hpp
+    src/util/fileutil.cpp
+    src/util/fileutil.h
+    src/util/xmlutil.cpp
+    src/util/xmlutil.h
+)
+
+file(GLOB_RECURSE TMXBIN_SOURCES
+    src/tmxbin/*.cpp
+    src/tmxbin/*.h
+)
+
+add_library(tmxbin ${TMXBIN_SOURCES})
+
+add_executable(tmx2tmb
+    ${COMMON_SOURCES}
     src/tmx2tmb/main.cpp
 )
 
-set(TSX2TSB_SOURCES
+add_executable(tsx2tsb
+    ${COMMON_SOURCES}
     src/tsx2tsb/main.cpp
 )
 
-set(COMMON_SOURCES
-    lib/pugixml/pugiconfig.hpp
-    lib/pugixml/pugixml.cpp
-    lib/pugixml/pugixml.hpp
-    src/common/fileutil.cpp
-    src/common/fileutil.h
-    src/common/xmlutil.cpp
-    src/common/xmlutil.h
-    src/common/enums.h
-)
+add_executable(tmxbin_loadertest src/test/loader.cpp)
 
-add_executable(tmx2tmb
-    ${TMX2TMB_SOURCES}
-    ${COMMON_SOURCES}
-)
-
-add_executable(tsx2tsb
-    ${TSX2TSB_SOURCES}
-    ${COMMON_SOURCES}
-)
+set(CUSTOM_LINKER_FLAGS "-g -lgcov --coverage -fprofile-arcs -static -static-libgcc -static-libstdc++")
+set(CUSTOM_COMPILE_FLAGS "-g -std=c++11 -fprofile-arcs -ftest-coverage")
 
 set_target_properties(tmx2tmb PROPERTIES
-    COMPILE_FLAGS "-g -std=c++11"
-    LINK_FLAGS "-g -ftest-coverage -fprofile-arcs"
+    COMPILE_FLAGS ${CUSTOM_LINKER_FLAGS}
+    LINK_FLAGS ${CUSTOM_COMPILE_FLAGS}
 )
+
+set_target_properties(tsx2tsb PROPERTIES
+    COMPILE_FLAGS ${CUSTOM_LINKER_FLAGS}
+    LINK_FLAGS ${CUSTOM_COMPILE_FLAGS}
+)
+
+
+
+
+

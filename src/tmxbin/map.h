@@ -1,9 +1,14 @@
 #pragma once
 
+#include <functional>
+
 #include "orientation.h"
 #include "renderorder.h"
 #include "allocator.h"
 #include "filestream.h"
+#include "tileset.h"
+#include "tilesetmanager.h"
+
 
 namespace tmxbin {
 
@@ -12,6 +17,7 @@ struct TileSetEntry
 {
     uint16_t firstGid;
     char* source;
+    TileSet* tilesetObject;
 };
 
 struct TileMapLayer
@@ -26,7 +32,10 @@ struct TileMapLayer
 class Map
 {
 public:
-    Map(InputStream* istream, Allocator* allocator=nullptr)
+    Map(
+            InputStream* istream,
+            InputStreamBuilder* stream_builder=nullptr,
+            Allocator* allocator=nullptr)
         : m_allocator(allocator)
     {
         if( m_allocator == nullptr )
@@ -49,6 +58,7 @@ public:
             TileSetEntry& tse = m_tilesetEntries[i];
             istream->readT<uint16_t>(&tse.firstGid);
             tse.source = istream->readStr(m_allocator);
+            tse.tilesetObject = load_tileset( tse.source, stream_builder );
         }
 
         istream->readT<uint8_t>(&m_numLayers);
@@ -69,11 +79,20 @@ public:
 
     ~Map()
     {
+        // clear tileset entries
         for( uint8_t i = 0; i < m_numTilesetEntries; i++ )
         {
             m_allocator->dealloc(m_tilesetEntries[i].source);
         }
         m_allocator->dealloc(m_tilesetEntries);
+
+        // clear tile map layers
+        for( uint8_t i = 0 ; i < m_numLayers; i++ )
+        {
+            m_allocator->dealloc(m_tileMapLayers[i].name);
+            m_allocator->dealloc(m_tileMapLayers[i].data);
+        }
+        m_allocator->dealloc(m_tileMapLayers);
 
         if( m_usingDefaultAllocator )
         {
@@ -97,6 +116,7 @@ private:
 
     Allocator* m_allocator;
     bool m_usingDefaultAllocator = false;
+
 
 };
 

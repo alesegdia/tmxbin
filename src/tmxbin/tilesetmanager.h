@@ -1,28 +1,24 @@
 #pragma once
 
+#include <functional>
+
+
 #include "tileset.h"
-#include "inputstream.h"
+#include "allocator.h"
 
 
 namespace tmxbin {
 
 
-class TileSetManager
+struct InputStreamBuilder
 {
-public:
-    uint8_t getIndexForTilesetPath(const char* path)
-    {
-
-    }
-
-    uint8_t loadTileSet(const char* id, InputStream& is)
-    {
-
-    }
-
-private:
-    TileSet* m_tileSets;
+    std::function<InputStream*(const char*)> create;
+    std::function<void(InputStream*)> destroy;
 };
+
+void set_custom_tileset_allocator(Allocator* allocator, uint8_t& status);
+TileSet* load_tileset(const char* path, InputStreamBuilder* cisb = nullptr);
+void destroy_tilesets();
 
 
 }

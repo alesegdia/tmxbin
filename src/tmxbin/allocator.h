@@ -16,13 +16,19 @@ public:
         return static_cast<T*>(alloc(sizeof(T), num_elements));
     }
 
+    template<typename T, typename... Args>
+    T* construct(Args&&... args)
+    {
+        return new (alloc<T>()) T(args...);
+    }
+
     template <typename T>
     void dealloc(T* memory)
     {
         dealloc(memory);
     }
 
-    virtual void* alloc(size_t element_size, size_t element_count) = 0 ;
+    virtual void* alloc(size_t element_size, size_t element_count = 1) = 0 ;
     virtual void dealloc(void* memory) = 0 ;
 
 };

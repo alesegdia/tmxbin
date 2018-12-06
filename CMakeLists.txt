@@ -62,7 +62,5 @@ set_target_properties(tmxbin PROPERTIES
     LINK_FLAGS ${CUSTOM_COMPILE_FLAGS}
 )
 
-
-
-
+set(EXECUTABLE_OUTPUT_PATH "${CMAKE_CURRENT_SOURCE_DIR}/bin")
 

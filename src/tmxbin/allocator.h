@@ -11,7 +11,7 @@ public:
     virtual ~Allocator();
 
     template <typename T>
-    T* alloc(size_t num_elements)
+    T* allocT(size_t num_elements=1)
     {
         return static_cast<T*>(alloc(sizeof(T), num_elements));
     }
@@ -19,16 +19,16 @@ public:
     template<typename T, typename... Args>
     T* construct(Args&&... args)
     {
-        return new (alloc<T>()) T(args...);
+        return new (allocT<T>()) T(args...);
     }
 
     template <typename T>
-    void dealloc(T* memory)
+    void deallocT(T* memory)
     {
         dealloc(memory);
     }
 
-    virtual void* alloc(size_t element_size, size_t element_count = 1) = 0 ;
+    virtual void* alloc(size_t element_size, size_t element_count) = 0 ;
     virtual void dealloc(void* memory) = 0 ;
 
 };

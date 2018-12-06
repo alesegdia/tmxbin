@@ -12,7 +12,7 @@ OutputStream::~OutputStream()
 
 void OutputStream::writeStr(const char *str)
 {
-    uint16_t sz = uint16_t(strlen(str));
+    uint16_t sz = uint16_t(strlen(str)) + 1;
     writeT<uint16_t>(uint16_t(sz));
     write(str, sz);
 }
@@ -26,7 +26,7 @@ char *InputStream::readStr(Allocator *allocator)
 {
     uint16_t size;
     readT<uint16_t>(&size);
-    char* buffer = allocator->alloc<char>(size);
+    char* buffer = allocator->allocT<char>(size);
     read( buffer, size );
     return buffer;
 }

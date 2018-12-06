@@ -52,6 +52,16 @@ set_target_properties(tsx2tsb PROPERTIES
     LINK_FLAGS ${CUSTOM_COMPILE_FLAGS}
 )
 
+set_target_properties(tmxbin_loadertest PROPERTIES
+    COMPILE_FLAGS ${CUSTOM_LINKER_FLAGS}
+    LINK_FLAGS ${CUSTOM_COMPILE_FLAGS}
+)
+
+set_target_properties(tmxbin PROPERTIES
+    COMPILE_FLAGS ${CUSTOM_LINKER_FLAGS}
+    LINK_FLAGS ${CUSTOM_COMPILE_FLAGS}
+)
+
 
 
 

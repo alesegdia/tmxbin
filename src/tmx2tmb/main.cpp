@@ -17,7 +17,7 @@ tmxbin::Orientation parse_orientation( const pugi::xml_node& mapnode )
     assert(attr_res != nullptr);
     auto str = attr_res.as_string();
 
-    if( strcmp(str, "orthogonal") )
+    if( strcmp(str, "orthogonal") == 0 )
     {
         return tmxbin::Orientation::Orthogonal;
     }
@@ -32,9 +32,9 @@ tmxbin::RenderOrder parse_renderorder( const pugi::xml_node& mapnode )
     pugi::xml_attribute attr_res = mapnode.attribute("renderorder");
     assert(attr_res != nullptr);
     auto str = attr_res.as_string();
-    if( strcmp(str, "right-down") ) return tmxbin::RenderOrder::RightDown;
-    if( strcmp(str, "right-up") ) return tmxbin::RenderOrder::RightUp;
-    if( strcmp(str, "left-down") ) return tmxbin::RenderOrder::LeftDown;
+    if( strcmp(str, "right-down") == 0 ) return tmxbin::RenderOrder::RightDown;
+    if( strcmp(str, "right-up") == 0 ) return tmxbin::RenderOrder::RightUp;
+    if( strcmp(str, "left-down") == 0 ) return tmxbin::RenderOrder::LeftDown;
     return tmxbin::RenderOrder::LeftUp;
 }
 
@@ -108,6 +108,7 @@ void write_layer( tmxbin::StdOutputFile& of, pugi::xml_node layer )
     bool number_found = false;
     int32_t len = int32_t(strlen(layer_data));
 
+    int elemens_count = 0;
     while( *ptr != '\0' )
     {
         bool char_is_number = *ptr >= '0' && *ptr <= '9';
@@ -127,11 +128,38 @@ void write_layer( tmxbin::StdOutputFile& of, pugi::xml_node layer )
             {
                 assert(accumulator <= 255 && "Only supporting 1 bitemap (.bandcamp.com)");
                 of.writeT<uint8_t>(uint8_t(accumulator));
+                elemens_count++;
             }
             number_found = false;
             accumulator = 0;
         }
         ptr++;
+    }
+
+    printf("%d\n", elemens_count);
+}
+
+/**
+ * 0a0b0c1d1e2f1g1h0i1j2k
+ * ├── a
+ * ├── b
+ * ├── c
+ * │   ├── d
+ * │   ├── e
+ * │   │   └── f
+ * │   ├── g
+ * │   └── h
+ * └── i
+ *     └── j
+ *         └── k
+ */
+void write_group( tmxbin::StdOutputFile& out, pugi::xml_node node, uint8_t depth = 0 )
+{
+    auto tilesets = tmxbin::get_children(node, "group");
+    out.writeT<uint8_t>( uint8_t(tilesets.size()) );
+    for( auto& tileset : tilesets )
+    {
+        write_tileset(out, tileset);
     }
 }
 
@@ -190,6 +218,7 @@ int main( int argc, char** argv )
     {
         write_layer(out, layer);
     }
+
 
     return 0;
 }

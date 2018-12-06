@@ -15,7 +15,9 @@ int main( int argc, char** argv )
     {
         XSTF_TEST("Loading");
         tmxbin::StdInputFile file;
+        file.open("testdata/simplemap.tmb");
         tmxbin::Map map(&file);
+        XSTF_ASSERT(map.numLayers() == 2, "Incorrect number of layers");
     }
 
     tmxbin::destroy_tilesets();

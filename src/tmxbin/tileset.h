@@ -1,6 +1,8 @@
 #pragma once
 
 #include <unordered_map>
+#include <vector>
+#include <iostream>
 
 #include "filestream.h"
 
@@ -8,43 +10,28 @@
 namespace tmxbin {
 
 
-class TileProperty
+struct TileProperty
 {
-public:
-
-
-private:
-    std::string m_type;
-    std::string m_value;
-
+    std::string name;
+    std::string type;
+    std::string value;
 };
 
 struct Tile {
-    std::unordered_map<std::string, std::string> properties;
+    uint16_t id;
+    std::unordered_map<std::string, TileProperty> properties;
+    bool hasProperty(std::string prop)
+    {
+        return properties.count(prop);
+    }
 };
 
 class TileSet
 {
 public:
-    TileSet( InputStream* is, Allocator* allocator )
-        : m_allocator(allocator)
-    {
-        if( m_allocator == nullptr )
-        {
-            m_usingDefaultAllocator = true;
-            m_allocator = new DefaultAllocator();
-        }
+    TileSet( InputStream* is, Allocator* allocator );
 
-        m_name = is->readStr(m_allocator);
-        is->readT<uint16_t>(&m_tileWidth);
-        is->readT<uint16_t>(&m_tileHeight);
-        is->readT<uint16_t>(&m_tileCount);
-        is->readT<uint16_t>(&m_columns);
-
-        m_path = is->readStr(m_allocator);
-        is->readT<uint16_t>(&m_imageWidth);
-        is->readT<uint16_t>(&m_imageHeight);
-    }
+    void debug();
 
 private:
 
@@ -52,20 +39,19 @@ private:
     Allocator* m_allocator;
 
     // General info
-    char* m_name;
+    std::string m_name;
     uint16_t m_tileWidth;
     uint16_t m_tileHeight;
     uint16_t m_tileCount;
     uint16_t m_columns;
 
     // Image
-    char* m_path;
+    std::string m_path;
     uint16_t m_imageWidth;
     uint16_t m_imageHeight;
 
     // Tiles
-    uint8_t m_numTiles;
-    Tile* m_tiles;
+    std::vector<Tile> m_tiles;
 
 };
 

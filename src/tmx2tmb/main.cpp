@@ -219,6 +219,7 @@ int main( int argc, char** argv )
         write_layer(out, layer);
     }
 
+    out.close();
 
     return 0;
 }

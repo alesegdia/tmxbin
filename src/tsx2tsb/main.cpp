@@ -53,6 +53,7 @@ int main( int argc, char** argv )
     assert(attr_columns != nullptr);
 
     const char* name = attr_name.as_string();
+    std::cout << name << std::endl;
     out.writeStr(name);
 
     out.writeT<uint16_t>(uint16_t(attr_tw.as_uint()));
@@ -102,6 +103,8 @@ int main( int argc, char** argv )
             out.writeStr(attr_value.as_string());
         }
     }
+
+    out.close();
 
     return 0;
 }

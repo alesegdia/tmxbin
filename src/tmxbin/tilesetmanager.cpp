@@ -62,7 +62,7 @@ TileSet* load_tileset(const char* path, InputStreamBuilder* cisb)
     {
         InputStream* is = cisb->create(path);
         Allocator* allocator = get_tileset_allocator();
-        ts = allocator->construct<TileSet>(*is, allocator);
+        ts = allocator->construct<TileSet>(is, allocator);
         cisb->destroy(is);
         tilesets.push_back(ts);
     }

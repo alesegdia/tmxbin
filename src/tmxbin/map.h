@@ -58,6 +58,15 @@ public:
         return nullptr;
     }
 
+    void debug()
+    {
+        for( int tsindex = 0; tsindex < m_numTilesetEntries; tsindex++ ) {
+            auto& tse = m_tilesetEntries[tsindex];
+            std::cout << "Tileset " << tsindex << std::endl;
+            tse.tilesetObject->debug();
+        }
+    }
+
 
 private:
     Orientation m_orientation;

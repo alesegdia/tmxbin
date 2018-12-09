@@ -42,9 +42,24 @@ class File
 {
 public:
     virtual ~File();
-    virtual void open(const char* path) = 0 ;
     virtual void close() = 0 ;
     virtual bool ok() = 0 ;
+
+	const std::string& path() {
+		return m_path;
+	}
+
+	void openPath(const char* path)
+	{
+		m_path = path;
+		open(path);
+	}
+
+private:
+	virtual void open(const char* path) = 0 ;
+
+	std::string m_path;
+
 };
 
 class StdFile : public File
@@ -61,16 +76,20 @@ class StdInputFile : public StdFile, public InputStream
 {
 public:
     virtual ~StdInputFile() override;
-    void open(const char* path) override;
     void read(char *out_buffer, size_t num_elements) override;
+
+private:
+	void open(const char* path) override;
 };
 
 class StdOutputFile : public StdFile, public OutputStream
 {
 public:
     virtual ~StdOutputFile() override;
-    void open(const char* path) override;
     void write(const char* buffer, size_t num_elements) override;
+
+private:
+	void open(const char* path) override;
 };
 
 

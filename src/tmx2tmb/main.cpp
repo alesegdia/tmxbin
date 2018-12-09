@@ -183,7 +183,7 @@ int main( int argc, char** argv )
     std::string outfile_path = tmxbin::change_filestr_extension(argv[1], "tmb");
 
     tmxbin::StdOutputFile out;
-    out.open(outfile_path.c_str());
+    out.openPath(outfile_path.c_str());
 
     if( false == out.ok() )
     {

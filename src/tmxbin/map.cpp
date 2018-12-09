@@ -27,7 +27,11 @@ Map::Map(InputStream *istream, InputStreamBuilder *stream_builder, Allocator *al
         TileSetEntry& tse = m_tilesetEntries[i];
         istream->readT<uint16_t>(&tse.firstGid);
         tse.source = istream->readStr(m_allocator);
-        tse.tilesetObject = load_tileset( tse.source, stream_builder );
+		// istream needs to be a file, forget about simple streams and pass file to loader
+		//size_t found = istream->path().find_last_of("\//");
+		//auto folder = istream->path().substr(0, found);
+		//std::cout << folder << std::endl;
+		tse.tilesetObject = load_tileset( tse.source, stream_builder );
     }
 
     istream->readT<uint8_t>(&m_numLayers);

@@ -15,7 +15,7 @@ static bool using_default_allocator = false;
 static InputStream *default_create_tileset_input_stream_cb(const char *src)
 {
     StdInputFile* file = new StdInputFile;
-    file->open(src);
+	file->openPath(src);
 	assert(file->ok());
     return file;
 }

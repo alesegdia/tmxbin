@@ -1,4 +1,5 @@
 #include <vector>
+#include <cassert>
 
 #include "tilesetmanager.h"
 
@@ -15,6 +16,7 @@ static InputStream *default_create_tileset_input_stream_cb(const char *src)
 {
     StdInputFile* file = new StdInputFile;
     file->open(src);
+	assert(file->ok());
     return file;
 }
 

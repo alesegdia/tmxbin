@@ -14,7 +14,7 @@ void OutputStream::writeStr(const char *str)
 {
     uint16_t sz = uint16_t(strlen(str)) + 1;
     writeT<uint16_t>(uint16_t(sz));
-    write(str, sz);
+	write(str, sz);
 }
 
 InputStream::~InputStream()

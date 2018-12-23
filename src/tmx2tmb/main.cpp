@@ -71,8 +71,10 @@ void write_tileset( tmxbin::StdOutputFile& of, pugi::xml_node tileset )
 
     of.writeT<uint16_t>(uint16_t(attr_firstgid.as_int()) );
     std::string source_file = std::string(attr_source.as_string());
+    auto new_str = tmxbin::get_folder(of.path()) + "/" + tmxbin::change_filestr_extension(source_file.c_str(), "tsb");
 
-    auto new_str = tmxbin::change_filestr_extension(source_file.c_str(), "tsb");
+    std::cout << "Writing tileset: " << new_str << std::endl;
+
     of.writeStr(new_str.c_str());
 }
 

@@ -45,20 +45,20 @@ public:
     virtual void close() = 0 ;
     virtual bool ok() = 0 ;
 
-	const std::string& path() {
-		return m_path;
-	}
+    const std::string& path() {
+        return m_path;
+    }
 
-	void openPath(const char* path)
-	{
-		m_path = path;
-		open(path);
-	}
+    void openPath(const char* path)
+    {
+        m_path = path;
+        open(path);
+    }
 
 private:
-	virtual void open(const char* path) = 0 ;
+    virtual void open(const char* path) = 0 ;
 
-	std::string m_path;
+    std::string m_path;
 
 };
 

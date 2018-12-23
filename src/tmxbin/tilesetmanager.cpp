@@ -6,6 +6,7 @@
 namespace tmxbin {
 
 
+static std::unordered_map<std::string, TileSet*> tilesetsByPath;
 static std::vector<TileSet*> tilesets;
 static Allocator* tileset_allocator = nullptr;
 static bool using_default_allocator = false;
@@ -43,8 +44,7 @@ static Allocator* get_tileset_allocator()
 
 static TileSet* get_tileset_by_path( const char* path )
 {
-    // try to find the tileset, otherwise return nullptr
-    return nullptr;
+    return tilesetsByPath[std::string(path)];
 }
 
 TileSet* load_tileset(const char* path, InputStreamBuilder* cisb)
@@ -67,6 +67,7 @@ TileSet* load_tileset(const char* path, InputStreamBuilder* cisb)
         ts = allocator->construct<TileSet>(is, allocator);
         cisb->destroy(is);
         tilesets.push_back(ts);
+        tilesetsByPath[std::string(path)] = ts;
     }
 
     return ts;
